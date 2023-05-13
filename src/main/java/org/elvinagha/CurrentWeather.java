@@ -1,6 +1,7 @@
-package org.example;
+package org.elvinagha;
 
 import io.restassured.response.Response;
+import org.elvinagha.util.ApiKey;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -8,33 +9,28 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertTrue;
 
-public class Main {
+public class CurrentWeather {
 
 	@DataProvider(name="requestData")
-	private static Object[] firstRequest(){
+	private static Object[] CurrentParisLongLat(){
 		String host = "http://api.weatherapi.com/v1/";
 		String category = "current.json";
-		String apiKey = "?key=" + getApiKey();
+		String apiKey = "?key=" + ApiKey.getApiKey();
 		String q = "&q=48.8567,2.3508";
 		String request = host + category + apiKey + q;
-		Response res =
-					given()
-						.when()
-						.get(request)
-						.then()
-						.statusCode(200)
-						.log()
-						.body().extract().response();
+
+		Response res = given().when().get(request)
+						.then().statusCode(200)
+						.log().body().extract().response();
+
 		String response = res.asString();
 		return new Object[]{response};
 	}
 
 	@Test(priority=1, dataProvider = "requestData")
-	private static void t1_Name(String requestData){
+	private static void t1_City(String requestData){
 		assertTrue(requestData.contains("Paris"));
 	}
 
@@ -61,38 +57,6 @@ public class Main {
 	@Test(priority=6, dataProvider = "requestData")
 	private static void t6_Longitude(String requestData){
 		assertTrue(requestData.contains("2.35"));
-	}
-
-	@Test(priority=7)
-	private static void secondRequest(){
-		String host = "http://api.weatherapi.com/v1/";
-		String category = "current.json";
-		String apiKey = "?key=" + getApiKey();
-		String q = "&q=London";
-		String request = host + category + apiKey + q;
-		Response res =
-					given()
-						.when()
-						.get(request)
-						.then()
-						.statusCode(200)
-						.log()
-						.body().extract().response();
-		String response = res.asString();
-	}
-
-	private static String getApiKey(){
-		String result = "";
-		try {
-			File myObj = new File("APIKEY");
-			Scanner myReader = new Scanner(myObj);
-			result = myReader.nextLine();
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
-		return result;
 	}
 
 }
