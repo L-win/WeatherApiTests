@@ -2,6 +2,7 @@ package org.elvinagha;
 
 import io.restassured.response.Response;
 import org.elvinagha.util.ApiKey;
+import org.elvinagha.util.Json;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -21,11 +22,13 @@ public class CurrentWeather {
 		String q = "&q=48.8567,2.3508";
 		String request = host + category + apiKey + q;
 
-		Response res = given().when().get(request)
-						.then().statusCode(200)
-						.log().body().extract().response();
+//		Response res = given().when().get(request).then().statusCode(200).log().body().extract().response();
+		Response res = given().when().get(request).then().statusCode(200).extract().response();
 
 		String response = res.asString();
+
+//		Json.parse(response);
+
 		return new Object[]{response};
 	}
 
