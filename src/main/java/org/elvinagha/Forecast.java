@@ -19,29 +19,18 @@ public class Forecast {
 		String q = "&q=London";
 		String request = host + category + apiKey + q;
 
-		Response res =
-				given()
-						.when().get(request)
-				.then()
-						.statusCode(200)
-				.extract()
-						.response();
+		Response res = given().when().get(request).then().statusCode(200).extract().response();
 
 		return new Object[]{res.asString()};
 	}
 
 	@Test(priority=1, dataProvider="request")
-	private static void TEMP(String request){
-		System.out.println(request);
-	}
-
-	@Test(priority=1, dataProvider="request")
-	private static void t_isDay_Integer(String request){
+	private static void type_isDay_Integer(String request){
 		assertTrue(Json.parse(request).getJSONObject("current").get("is_day") instanceof Integer);
 	}
 
 	@Test(priority=1, dataProvider="request")
-	private static void t1_City(String request){
+	private static void type_wind_mph(String request){
 		assertTrue(Json.parse(request).getJSONObject("current").get("wind_mph") instanceof Double);
 	}
 
